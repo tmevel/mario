@@ -13,7 +13,7 @@ public class GameFrame extends JFrame {
         this.display = new GameDisplay();
         this.add(this.display);
         this.setVisible(true);
-        new FakeNetworkInterface(this.display).start();;
+        new FakeNetworkInterface(this.display).start();
     }
     public static void main(String[] args){
         new GameFrame();

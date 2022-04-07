@@ -7,10 +7,10 @@ import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
 
-public class BlockTextureCache extends HashMap<Class, Image> {
+public class BlockTextureCache extends HashMap<Class, Texture> {
     public void loadTextures(){
         try {
-            this.put(BaseBlock.class, ImageIO.read(new File("textures/BaseBlock.png")));
+            this.put(BaseBlock.class, new UnanimatedTexture(ImageIO.read(new File("textures/BaseBlock.png"))));
         }catch(Exception e){
             e.printStackTrace();
         }

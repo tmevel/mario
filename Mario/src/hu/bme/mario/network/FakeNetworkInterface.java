@@ -28,7 +28,7 @@ public class FakeNetworkInterface extends Thread{
             map[x][0] = new BaseBlock();
         }
 
-        SmallPlayer sp = new SmallPlayer(0,1);
+        SmallPlayer sp = new SmallPlayer(15,1);
 
         Game g = new Game(map);
         g.addEntity(sp);
@@ -38,7 +38,8 @@ public class FakeNetworkInterface extends Thread{
         while(true){
             cx+=0.05;
             this.display.displayGame(g);
-            this.display.forceCameraX(cx);
+            //this.display.forceCameraX(cx);
+            g.getEntities().get(0).decX();
 
             try{
                 Thread.sleep(20);
