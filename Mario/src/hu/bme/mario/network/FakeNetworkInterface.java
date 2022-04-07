@@ -6,9 +6,13 @@ import hu.bme.mario.model.Block;
 import hu.bme.mario.model.Game;
 import hu.bme.mario.model.SmallPlayer;
 
+import java.awt.event.KeyEvent;
+
 public class FakeNetworkInterface extends Thread{
 
     private GameDisplay display;
+    private boolean goLeft = false;
+    private boolean goRight = false;
 
     public FakeNetworkInterface(GameDisplay display){
         this.display = display;
@@ -39,7 +43,14 @@ public class FakeNetworkInterface extends Thread{
             cx+=0.05;
             this.display.displayGame(g);
             //this.display.forceCameraX(cx);
-            g.getEntities().get(0).decX();
+            if(this.goLeft && this.goRight) {
+
+            }else if(this.goLeft){
+                g.getEntities().get(0).decX();
+            }else if(this.goRight) {
+                g.getEntities().get(0).incX();
+            }
+            //g.getEntities().get(0).decX();
 
             try{
                 Thread.sleep(20);
@@ -47,5 +58,22 @@ public class FakeNetworkInterface extends Thread{
                 e.printStackTrace();
             }
         }
+    }
+
+    public void sendKeyEvent(KeyEvent e){
+        if(e.getID() == KeyEvent.KEY_PRESSED){
+            if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+                this.goRight = true;
+            }else if(e.getKeyCode()==KeyEvent.VK_LEFT){
+                this.goLeft = true;
+            }
+        }else if(e.getID() == KeyEvent.KEY_RELEASED){
+            if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+                this.goRight = false;
+            }else if(e.getKeyCode()==KeyEvent.VK_LEFT){
+                this.goLeft = false;
+            }
+        }
+
     }
 }

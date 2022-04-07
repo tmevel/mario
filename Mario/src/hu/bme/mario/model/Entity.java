@@ -25,10 +25,10 @@ public abstract class Entity {
 
     //to be removed
     public void incX(){
-        this.x+=0.05;
+        this.x+=0.1;
     }
     public void decX(){
-        this.x-=0.05;
+        this.x-=0.1;
     }
 
     public double getY(){
