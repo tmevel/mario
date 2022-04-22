@@ -1,6 +1,7 @@
 package hu.bme.mario.client;
 
 import hu.bme.mario.model.Block;
+import hu.bme.mario.model.Entity;
 import hu.bme.mario.model.Game;
 
 import javax.imageio.ImageIO;
@@ -10,26 +11,40 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class GameDisplay extends JPanel {
-    private final double marginX = 10;
-    private final double displayHeightInBlock = 10;
+    private final double marginX = 8;
+    private final double displayHeightInBlock = 10.5;
     private final double scrollRatioBackground = 0.1;
 
     private BufferedImage buf;
 
     private BlockTextureCache blockTextures;
+    private EntityTextureCache entityTextures;
     private BufferedImage background;
+
+    private String os;
+    private String path;
 
     private double cameraX;
 
     public GameDisplay(){
         this.blockTextures = new BlockTextureCache();
         this.blockTextures.loadTextures();
+        this.entityTextures = new EntityTextureCache();
+        this.entityTextures.loadTextures();
         this.cameraX = 0;
 
         this.buf = new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR);
 
+        os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            path = "Mario/textures/background.png";
+        }
+        else if (os.contains("nix") || os.contains("aix") || os.contains("nux")){
+            path = "textures/background.png";
+        }
+
         try {
-            this.background = ImageIO.read(new File("textures/background.png"));
+            this.background = ImageIO.read(new File(path));
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -42,6 +57,8 @@ public class GameDisplay extends JPanel {
     public void displayGame(Game game){
         paintBackground();
         paintBlocks(game.getMap());
+        paintEntity(game.getEntities().get(0));
+        recomputeCamera(game);
         this.repaint();
     }
 
@@ -79,16 +96,40 @@ public class GameDisplay extends JPanel {
     private void paintBlocks(Block[][] map){
         for(int x=0;x<map.length;x++){
             for(int y=0;y<map[x].length;y++){
-                if(map[x][map[x].length-y-1]!=null){
-                    paintBlock(map[x][map[x].length-y-1], x, y);
+                if(map[x][y]!=null){
+                    paintBlock(map[x][y], x, y);
                 }
             }
         }
     }
     private void paintBlock(Block b, int x, int y){
-        Image texture = this.blockTextures.get(b.getClass());
+        Image texture = this.blockTextures.get(b.getClass()).getTexture();
         int pixPerBlock = (int)(this.buf.getHeight()/this.displayHeightInBlock);
 
-        this.buf.getGraphics().drawImage(texture, (int)((x-this.cameraX)*pixPerBlock), y*pixPerBlock, pixPerBlock, pixPerBlock, null);
+        this.buf.getGraphics().drawImage(texture, (int)((x-this.cameraX)*pixPerBlock), this.buf.getHeight()-(y+1)*pixPerBlock, pixPerBlock, pixPerBlock, null);
+    }
+
+    private void paintEntity(Entity e){
+        EntityTexture et = this.entityTextures.get(e.getClass());
+        Image texture = et.getTexture();
+        int pixPerBlock = (int)(this.buf.getHeight()/this.displayHeightInBlock);
+
+
+
+        this.buf.getGraphics().drawImage(texture, (int)(pixPerBlock*(e.getX()-this.cameraX)), this.buf.getHeight()-((int)(pixPerBlock*e.getY())+(int)(pixPerBlock*et.getHeight())), (int)(pixPerBlock*et.getWidth()), (int)(pixPerBlock*et.getHeight()), null);
+    }
+
+    private void recomputeCamera(Game g){
+        Entity centerEntity = g.getEntities().get(0);
+
+        double pixPerBlock = this.buf.getHeight()/this.displayHeightInBlock;
+
+        if(centerEntity.getX()>this.cameraX+(this.buf.getWidth()/pixPerBlock)-this.marginX){
+            this.cameraX = Math.min(-(this.buf.getWidth()/pixPerBlock)+this.marginX + centerEntity.getX(), g.getMap().length - this.buf.getWidth()/pixPerBlock);
+        }else if(centerEntity.getX()<this.cameraX+this.marginX){
+            this.cameraX = Math.max(centerEntity.getX()-this.marginX, 0);
+        }
+
+
     }
 }

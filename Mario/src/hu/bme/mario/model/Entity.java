@@ -23,6 +23,14 @@ public abstract class Entity {
         return x;
     }
 
+    //to be removed
+    public void incX(){
+        this.x+=0.1;
+    }
+    public void decX(){
+        this.x-=0.1;
+    }
+
     public double getY(){
         return y;
     }
