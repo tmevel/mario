@@ -1,6 +1,6 @@
 package hu.bme.mario.model;
 
-import java.util.ArrayList;
+import java.util.arraylist;
 
 public class Game {
     private ArrayList<Entity> entities;
