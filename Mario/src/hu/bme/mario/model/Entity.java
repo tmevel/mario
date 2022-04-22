@@ -10,9 +10,9 @@ public abstract class Entity {
     private double accY;
     private Hitbox hitbox;
     private boolean living;
-    private boolean left;
+    private double counterJump;
 
-    public Entity(double x, double y, double speedX, double speedY, double accX, double accY, Hitbox hitbox, boolean living, boolean left){
+    public Entity(double x, double y, double speedX, double speedY, double accX, double accY, Hitbox hitbox, boolean living, double counterJump){
         this.x = x;
         this.y = y;
         this.speedX = speedX;
@@ -21,7 +21,7 @@ public abstract class Entity {
         this.accY = accY;
         this.hitbox = hitbox;
         this.living = living;
-        this.left = left;
+        this.counterJump = counterJump;
     }
 
     public double getX(){
@@ -45,7 +45,30 @@ public abstract class Entity {
 
     public void update(double dt, Block[][] map){
         //TODO apply mechanical calculation, dt the time between 2 frames
+
+
     }
+
+    public void walk(){
+        if (speedX<getMaxSpeedX()){
+            speedX=+accX;
+        }else {
+            speedX=getMaxSpeedX();
+        }
+        x=+speedX;
+    }
+
+    public void jump() {
+        counterJump++;
+        if (counterJump < 10) {
+            accY = 10 - counterJump;
+        } else {
+            accY--;
+        }
+        speedY = +accY;
+        y = +speedY;
+    }
+
 
 
 }
