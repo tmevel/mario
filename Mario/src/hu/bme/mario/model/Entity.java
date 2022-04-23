@@ -46,11 +46,52 @@ public abstract class Entity {
     public void update(double dt, Block[][] map){
         //TODO apply mechanical calculation, dt the time between 2 frames
 
-
-        if(y<0){
-            living=false;
+        if(map[(int)x][(int)y-1]==null && map[(int)x+1][(int)y-1]==null){             //gravity
+            accY=-1;                    //si les deux cases en dessous de marie sont vide, il accelere vers le bas
         }
+        else{
+            speedY = 0;                 //sinon son Y reste le meme
+            accY = 0;
+        }
+
+        if(map[(int)(x+ hitbox.getWidth())][(int)y]==null && map[(int)(x+ hitbox.getWidth())][(int)(y+ hitbox.getHeight())]==null){
+            accX=+1;                    //si il n'y a pas de case devant lui, a droit, il avance a droit
+        }
+        else{
+            speedX = 0;                 //sinon son X reste le meme
+            accX = 0;
+        }
+
+        if(map[(int)(x - 1)][(int)y]==null && map[(int)(x-1)][(int)(y+ hitbox.getHeight())]==null){
+            accX=-1;                    //si il n'y a pas de case devant lui, a gauche, il avance a droit
+        }
+        else{
+            speedX = 0;                 //sinon son X reste le meme
+            accX = 0;
+        }
+
+        if(map[(int)x][(int)(y+ hitbox.getHeight())]==null && map[(int)x+1][(int)(y+ hitbox.getHeight())]==null){
+            counterJump++;                  //augmente pour que mario ralentisse en l'air
+            if (counterJump < 11) {
+                accY = 10 - counterJump;
+            }                                       //si les deux cases en dessus de marie sont vide, il peut faire son saut
+        }
+        else{
+            speedY = 0;                 //sinon son Y reste le meme
+            accY = 0;
+        }
+
+        if(y<0){                    //fall into the void
+            living=false;                   //si il descend en dessous de la map, il meurt
+        }
+
+        speedY +=accY;
+        speedX +=accX;
+
+        y+=speedY;
+        x+=speedX;
     }
+
 
     public void walk(){
         if (speedX<getMaxSpeedX()){
@@ -70,8 +111,5 @@ public abstract class Entity {
             y = +speedY;
     }
 
-    public void gravity(){
-
-    }
 
 }

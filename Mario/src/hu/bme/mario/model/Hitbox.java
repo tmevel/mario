@@ -11,6 +11,14 @@ public class Hitbox {
 
     }
 
+    public double getHeight() {
+        return height;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
     public boolean hitboxCollision(Entity a, Entity b){
         //TODO check collision between 2 entities
         if (a.getX()==b.getX()+width&&a.getY()==b.getY()||a.getX()==b.getX()&&a.getY()+height==b.getY()||a.getX()+width==b.getX()&&a.getY()==b.getY()||a.getX()==b.getX()&&a.getY()==b.getY()+height){

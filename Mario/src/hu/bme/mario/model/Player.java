@@ -20,9 +20,7 @@ public abstract class Player extends Entity {
     protected double getMaxSpeedX(){
         return 1;
     }
-    protected double getMaxSpeedY(){
-        return 1;
-    }
+    protected double getMaxSpeedY(){ return 1; }
 
 
 }
