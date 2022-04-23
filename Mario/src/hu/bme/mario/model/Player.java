@@ -7,7 +7,7 @@ public abstract class Player extends Entity {
     private boolean in_the_air;
 
     public Player(double x, double y, Hitbox hitbox){
-        super(x,y,0,0,0,0, hitbox, true);
+        super(x,y,0,0,0,0, hitbox, true, 0);
         this.canJump = false;
     }
 

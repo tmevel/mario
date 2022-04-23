@@ -47,6 +47,9 @@ public abstract class Entity {
         //TODO apply mechanical calculation, dt the time between 2 frames
 
 
+        if(y<0){
+            living=false;
+        }
     }
 
     public void walk(){
@@ -59,16 +62,16 @@ public abstract class Entity {
     }
 
     public void jump() {
-        counterJump++;
-        if (counterJump < 10) {
-            accY = 10 - counterJump;
-        } else {
-            accY--;
-        }
-        speedY = +accY;
-        y = +speedY;
+            counterJump++;
+            if (counterJump < 11) {
+                accY = 10 - counterJump;
+            }
+            speedY = +accY;
+            y = +speedY;
     }
 
+    public void gravity(){
 
+    }
 
 }
