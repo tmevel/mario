@@ -8,35 +8,15 @@ import hu.bme.mario.model.SmallPlayer;
 
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 
 
-public class Server {
-    private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
-    private byte[] buf = new byte[256];
-    private boolean goLeft = false;
-    private boolean goRight = false;
+public class Server extends Thread{
+    private Game game;
+    private ServerSocket ss;
+    private ArrayList<Session> sessions;
 
-
-    public void start(int port) throws IOException {
-        //Starting the server and connecting to a client
-        ServerSocket serverSocket = new ServerSocket(port);
-        System.out.println("Listening on port " + port);
-        clientSocket = serverSocket.accept();
-        System.out.println("Connected to " + clientSocket.getRemoteSocketAddress());
-        System.out.println("Server ready");
-
-        //Open a stream of communication between the two
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        DatagramSocket socket = new DatagramSocket(1234);
-        String inputLine;
-
-        //The first packet is used to get an UDP connection
-        DatagramPacket initpacket = new DatagramPacket(buf, buf.length);
-        socket.receive(initpacket);
-
+    public Server(int port) throws IOException{
         //Game Parameters
         Block[][] map = new Block[40][10];
         map[5][7] = new BaseBlock();
@@ -47,24 +27,42 @@ public class Server {
             map[x][0] = new BaseBlock();
         }
         SmallPlayer sp = new SmallPlayer(15,1);
-        Game g = new Game(map);
-        g.addEntity(sp);
-        double cx = 0;
+        game = new Game(map);
+        game.addEntity(sp);
+        ss = new ServerSocket(port);
+        this.sessions = new ArrayList<Session>();
+    }
 
-        //Main loop checking for inputs on the stream
-        while ((inputLine = in.readLine()) != null) {
-            if ("end".equals(inputLine)) {
-                out.println("End");
-                break;
+
+
+    public void run() {
+        while (true) {
+            try {
+                System.out.println("waiting for connection");
+                Session s = new Session(this.game, ss.accept());
+                System.out.println("connection...");
+                sessions.add(s);
+                s.start();
+                System.out.println("connected");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+    }
 
-            //Change the game file based on the inputs
-            cx += 0.05;
-            if (this.goLeft && this.goRight) {
-            } else if (this.goLeft) {
-                g.getEntities().get(0).decX();
-            } else if (this.goRight) {
-                g.getEntities().get(0).incX();
+
+    public void runModel(){
+
+
+        while(true) {
+
+            if(this.sessions.size()==0) {
+            }else if (this.sessions.get(0).getGoLeft() && this.sessions.get(0).getGoRight()) {
+            } else if (this.sessions.get(0).getGoLeft()) {
+                this.game.getEntities().get(0).decX();
+            } else if (this.sessions.get(0).getGoRight()) {
+                this.game.getEntities().get(0).incX();
+                System.out.println(this.game.getEntities().get(0).getX());
             }
 
             try {
@@ -72,33 +70,20 @@ public class Server {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            //Sends the game file after a key has been pressed
-            InetAddress address = initpacket.getAddress();
-            port = initpacket.getPort();
-            byte[] packetdata = "Serialized_Game".getBytes();
-            DatagramPacket packet = new DatagramPacket(packetdata, packetdata.length, address, port);
-            try {
-                socket.send(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-
-
     }
 
-    public void stop() throws IOException {
-        in.close();
-        out.close();
-        clientSocket.close();
+    public void close() throws IOException {
+        //TODO close all sessions
     }
 
     //I used two main functions for the server and the client
-    public static void main(String[] args) throws IOException {
-        System.out.println("Server configuration");
-        Server server=new Server();
-        server.start(1234);
-        server.stop();
+    public static void main(String[] args) throws Exception {
+        System.out.println("Server");
+        Server server = new Server(12345);
+        server.start();
+        server.runModel();
+        Thread.sleep(60000);
+        server.close();
     }
 }

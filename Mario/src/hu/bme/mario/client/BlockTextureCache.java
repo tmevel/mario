@@ -8,13 +8,9 @@ import java.io.File;
 import java.util.HashMap;
 
 public class BlockTextureCache extends HashMap<Class, Texture> {
-<<<<<<< HEAD
-=======
     private String os;
     private String path;
 
-
->>>>>>> network
     public void loadTextures(){
         os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -25,11 +21,7 @@ public class BlockTextureCache extends HashMap<Class, Texture> {
         }
 
         try {
-<<<<<<< HEAD
-            this.put(BaseBlock.class, new UnanimatedTexture(ImageIO.read(new File("textures/BaseBlock.png"))));
-=======
             this.put(BaseBlock.class, new UnanimatedTexture(ImageIO.read(new File(path))));
->>>>>>> network
         }catch(Exception e){
             e.printStackTrace();
         }
