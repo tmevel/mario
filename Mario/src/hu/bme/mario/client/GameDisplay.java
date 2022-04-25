@@ -21,6 +21,9 @@ public class GameDisplay extends JPanel {
     private EntityTextureCache entityTextures;
     private BufferedImage background;
 
+    private String os;
+    private String path;
+
     private double cameraX;
 
     public GameDisplay(){
@@ -32,8 +35,16 @@ public class GameDisplay extends JPanel {
 
         this.buf = new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR);
 
+        os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            path = "Mario/textures/background.png";
+        }
+        else if (os.contains("nix") || os.contains("aix") || os.contains("nux")){
+            path = "textures/background.png";
+        }
+
         try {
-            this.background = ImageIO.read(new File("textures/background.png"));
+            this.background = ImageIO.read(new File(path));
         }catch(Exception e){
             e.printStackTrace();
         }

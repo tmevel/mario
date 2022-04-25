@@ -1,6 +1,8 @@
 package hu.bme.mario.model;
 
-public abstract class Entity {
+import java.io.Serializable;
+
+public abstract class Entity implements Serializable {
     private double x;
     private double y;
     private double speedX;

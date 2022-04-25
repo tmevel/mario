@@ -1,4 +1,6 @@
 package hu.bme.mario.model;
 
-public abstract class Block {
+import java.io.Serializable;
+
+public abstract class Block implements Serializable {
 }

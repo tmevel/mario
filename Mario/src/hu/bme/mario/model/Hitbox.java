@@ -1,6 +1,8 @@
 package hu.bme.mario.model;
 
-public class Hitbox {
+import java.io.Serializable;
+
+public class Hitbox implements Serializable {
     private double width;
     private double height;
 

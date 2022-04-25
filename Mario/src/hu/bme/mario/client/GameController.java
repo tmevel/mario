@@ -1,16 +1,14 @@
 package hu.bme.mario.client;
-
-import hu.bme.mario.network.FakeNetworkInterface;
-
+import hu.bme.mario.network.ClientInterface;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class GameController implements KeyListener {
 
-    FakeNetworkInterface networkInterface;
+    ClientInterface networkInterface;
 
-    public GameController(FakeNetworkInterface ni){
-        this.networkInterface = ni;
+    public GameController(ClientInterface ci){
+        this.networkInterface = ci;
     }
 
 

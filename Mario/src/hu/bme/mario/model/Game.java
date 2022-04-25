@@ -1,8 +1,9 @@
 package hu.bme.mario.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Serializable {
     private ArrayList<Entity> entities;
     private Block[][] map;
 
