@@ -11,21 +11,17 @@ public class Session extends Thread{
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-    private boolean goLeft = false;
-    private boolean goRight = false;
+    private KeyControl control;
 
     public Session(Game g, Socket s) throws IOException {
         this.g = g;
         this.oos = new ObjectOutputStream(s.getOutputStream());
         this.ois = new ObjectInputStream(s.getInputStream());
+        this.control = new KeyControl();
     }
 
-    public boolean getGoLeft(){
-        return goLeft;
-    }
-
-    public  boolean getGoRight(){
-        return goRight;
+    public KeyControl getControl(){
+        return this.control;
     }
 
     public void run(){
@@ -33,20 +29,8 @@ public class Session extends Thread{
             while(true){
                 Object o = this.ois.readObject();
                 if(o!=null){
-                    KeyControl e = (KeyControl) o;
-                    if(e.getID() == KeyEvent.KEY_PRESSED){
-                        if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-                            this.goRight = true;
-                        }else if(e.getKeyCode()==KeyEvent.VK_LEFT){
-                            this.goLeft = true;
-                        }
-                    }else if(e.getID() == KeyEvent.KEY_RELEASED){
-                        if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-                            this.goRight = false;
-                        }else if(e.getKeyCode()==KeyEvent.VK_LEFT){
-                            this.goLeft = false;
-                        }
-                    }
+                    System.out.println("rcved");
+                    this.control = (KeyControl) o;
                 }else {
                     this.oos.reset();
                     this.oos.writeObject(this.g);

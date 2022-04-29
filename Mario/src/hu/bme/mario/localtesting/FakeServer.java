@@ -1,22 +1,19 @@
-package hu.bme.mario.network;
+package hu.bme.mario.localtesting;
 
-import hu.bme.mario.client.GameFrame;
 import hu.bme.mario.model.BaseBlock;
 import hu.bme.mario.model.Block;
 import hu.bme.mario.model.Game;
 import hu.bme.mario.model.SmallPlayer;
+import hu.bme.mario.network.Session;
 
-import java.net.*;
-import java.io.*;
+
 import java.util.ArrayList;
 
-
-public class Server extends Thread{
+public class FakeServer extends Thread{
     private Game game;
-    private ServerSocket ss;
-    private ArrayList<Session> sessions;
+    private ArrayList<FakeSession> sessions;
 
-    public Server(int port) throws IOException{
+    public FakeServer(){
         //Game Parameters
         Block[][] map = new Block[40][10];
         map[5][7] = new BaseBlock();
@@ -29,31 +26,22 @@ public class Server extends Thread{
         SmallPlayer sp = new SmallPlayer(15,1);
         game = new Game(map);
         game.addEntity(sp);
-        ss = new ServerSocket(port);
-        this.sessions = new ArrayList<Session>();
+        this.sessions = new ArrayList<FakeSession>();
     }
 
 
+    public FakeSession createSession(){
+        FakeSession fs = new FakeSession(this.game);
+        this.sessions.add(fs);
+        return fs;
+    }
 
     public void run() {
-        while (true) {
-            try {
-                System.out.println("waiting for connection");
-                Session s = new Session(this.game, ss.accept());
-                System.out.println("connection...");
-                sessions.add(s);
-                s.start();
-                System.out.println("connected");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        this.runModel();
     }
 
 
     public void runModel(){
-
-
         while(true) {
 
             if(this.sessions.size()==0) {
@@ -70,19 +58,5 @@ public class Server extends Thread{
                 e.printStackTrace();
             }
         }
-    }
-
-    public void close() throws IOException {
-        //TODO close all sessions
-    }
-
-    //I used two main functions for the server and the client
-    public static void main(String[] args) throws Exception {
-        System.out.println("Server");
-        Server server = new Server(12345);
-        server.start();
-        server.runModel();
-        Thread.sleep(600000);
-        server.close();
     }
 }
