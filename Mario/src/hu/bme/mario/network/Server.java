@@ -59,9 +59,9 @@ public class Server extends Thread{
             if(this.sessions.size()==0) {
             }else if (this.sessions.get(0).getControl().goLeft() && this.sessions.get(0).getControl().goRight()) {
             } else if (this.sessions.get(0).getControl().goLeft()) {
-                this.game.getEntities().get(0).decX();
+                //this.game.getEntities().get(0).decX();
             } else if (this.sessions.get(0).getControl().goRight()) {
-                this.game.getEntities().get(0).incX();
+                //this.game.getEntities().get(0).incX();
             }
 
             try {

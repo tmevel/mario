@@ -2,22 +2,27 @@ package hu.bme.mario.client;
 
 import java.awt.*;
 
-public class EntityTexture implements Texture{
-    private Texture texture;
+public class EntityTexture{
+    private Texture standing;
+    private Texture moving;
     private double width;
     private double height;
     private int spriteOffsetX;
     private int spriteOffsetY;
-    public EntityTexture(Texture t, double width, double height, int spriteOffsetX, int spriteOffsetY){
-        this.texture = t;
+    public EntityTexture(Texture standing, Texture moving, double width, double height, int spriteOffsetX, int spriteOffsetY){
+        this.standing = standing;
+        this.moving = moving;
         this.width = width;
         this.height = height;
         this.spriteOffsetX = spriteOffsetX;
         this.spriteOffsetY = spriteOffsetY;
     }
 
-    public Image getTexture() {
-        return texture.getTexture();
+    public Image getMovingTexture() {
+        return moving.getTexture();
+    }
+    public Image getStandingTexture() {
+        return standing.getTexture();
     }
 
     public double getWidth() {

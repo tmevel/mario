@@ -20,6 +20,12 @@ public class Game implements Serializable {
         return map;
     }
 
+    public void update(double dt){
+        for(int i=0;i<this.entities.size();i++){
+            this.entities.get(i).update(dt, this.map);
+        }
+    }
+
     public void addEntity(Entity e) {
         this.entities.add(e);
     }

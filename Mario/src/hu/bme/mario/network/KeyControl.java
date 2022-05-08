@@ -6,6 +6,7 @@ import java.io.Serializable;
 public class KeyControl implements Serializable {
     private boolean right = false;
     private boolean left = false;
+    private boolean up = false;
 
     public boolean updateAndCheckChanged(KeyEvent ke){
         boolean changed = false;
@@ -20,6 +21,11 @@ public class KeyControl implements Serializable {
                     changed = true;
                 }
                 left = true;
+            }else if(ke.getKeyCode()==KeyEvent.VK_UP){
+                if(!up){
+                    changed = true;
+                }
+                up = true;
             }
         }else if(ke.getID() == KeyEvent.KEY_RELEASED){
             if(ke.getKeyCode()==KeyEvent.VK_RIGHT){
@@ -32,6 +38,11 @@ public class KeyControl implements Serializable {
                     changed = true;
                 }
                 left = false;
+            }else if(ke.getKeyCode()==KeyEvent.VK_UP){
+                if(up){
+                    changed = true;
+                }
+                up = false;
             }
         }
 
@@ -43,5 +54,8 @@ public class KeyControl implements Serializable {
     }
     public boolean goLeft(){
         return this.left;
+    }
+    public boolean jump(){
+        return this.up;
     }
 }

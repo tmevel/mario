@@ -1,9 +1,6 @@
 package hu.bme.mario.localtesting;
 
-import hu.bme.mario.model.BaseBlock;
-import hu.bme.mario.model.Block;
-import hu.bme.mario.model.Game;
-import hu.bme.mario.model.SmallPlayer;
+import hu.bme.mario.model.*;
 import hu.bme.mario.network.Session;
 
 
@@ -23,7 +20,7 @@ public class FakeServer extends Thread{
         for(int x=0;x<map.length;x++){
             map[x][0] = new BaseBlock();
         }
-        SmallPlayer sp = new SmallPlayer(15,1);
+        SmallPlayer sp = new SmallPlayer(15,4);
         game = new Game(map);
         game.addEntity(sp);
         this.sessions = new ArrayList<FakeSession>();
@@ -42,18 +39,31 @@ public class FakeServer extends Thread{
 
 
     public void runModel(){
-        while(true) {
+        double fps = 100;
+        long tps = (long)(1000/fps);
 
-            if(this.sessions.size()==0) {
-            }else if (this.sessions.get(0).getControl().goLeft() && this.sessions.get(0).getControl().goRight()) {
-            } else if (this.sessions.get(0).getControl().goLeft()) {
-                this.game.getEntities().get(0).decX();
-            } else if (this.sessions.get(0).getControl().goRight()) {
-                this.game.getEntities().get(0).incX();
+        while(true) {
+            long l = System.currentTimeMillis()+tps;
+            Player p = (Player)this.game.getEntities().get(0);
+            if(this.sessions.size()>0) {
+                if (this.sessions.get(0).getControl().goLeft() && this.sessions.get(0).getControl().goRight()) {
+                    p.stop();
+                } else if (this.sessions.get(0).getControl().goLeft()) {
+                    p.walkLeft();
+                } else if (this.sessions.get(0).getControl().goRight()) {
+                    p.walkRight();
+                }else{
+                    p.stop();
+                }
+                if(this.sessions.get(0).getControl().jump()){
+                    ((Player)this.game.getEntities().get(0)).jump();
+                }
             }
 
+            this.game.update((double)tps/1000);
+
             try {
-                Thread.sleep(10);
+                Thread.sleep(Math.max(0,l-System.currentTimeMillis()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

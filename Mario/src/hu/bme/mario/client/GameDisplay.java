@@ -3,6 +3,7 @@ package hu.bme.mario.client;
 import hu.bme.mario.model.Block;
 import hu.bme.mario.model.Entity;
 import hu.bme.mario.model.Game;
+import hu.bme.mario.model.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -110,13 +111,23 @@ public class GameDisplay extends JPanel {
     }
 
     private void paintEntity(Entity e){
-        EntityTexture et = this.entityTextures.get(e.getClass());
-        Image texture = et.getTexture();
         int pixPerBlock = (int)(this.buf.getHeight()/this.displayHeightInBlock);
+        EntityTexture et = this.entityTextures.get(e.getClass());
 
+        Image texture = null;
 
+        if(e.isMoving()){
+            texture = et.getMovingTexture();
+        }else{
+            texture = et.getStandingTexture();
+        }
 
-        this.buf.getGraphics().drawImage(texture, (int)(pixPerBlock*(e.getX()-this.cameraX)), this.buf.getHeight()-((int)(pixPerBlock*e.getY())+(int)(pixPerBlock*et.getHeight())), (int)(pixPerBlock*et.getWidth()), (int)(pixPerBlock*et.getHeight()), null);
+        if(e.isLookingLeft()){
+            this.buf.getGraphics().drawImage(texture, (int)(pixPerBlock*(e.getX()-this.cameraX)), this.buf.getHeight()-((int)(pixPerBlock*e.getY())+(int)(pixPerBlock*et.getHeight())), (int)(pixPerBlock*et.getWidth()), (int)(pixPerBlock*et.getHeight()), null);
+
+        }else{
+            this.buf.getGraphics().drawImage(texture, (int)(pixPerBlock*(e.getX()-this.cameraX)), this.buf.getHeight()-((int)(pixPerBlock*e.getY())+(int)(pixPerBlock*et.getHeight())), (int)(pixPerBlock*et.getWidth()), (int)(pixPerBlock*et.getHeight()), null);
+        }
     }
 
     private void recomputeCamera(Game g){
