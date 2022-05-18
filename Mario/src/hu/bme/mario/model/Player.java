@@ -4,6 +4,8 @@ public abstract class Player extends Entity {
     private static final double jumpSpeed = 21;
     private static final double walkAcc = 15;
     private static final double stopAcc = 50;
+    private static final double walkAccInAir = 5;
+    private static final double stopAccInAir = 15;
 
     private boolean walkRight = false;
     private boolean walkLeft = false;
@@ -33,28 +35,29 @@ public abstract class Player extends Entity {
     }
 
     public void update(double dt, Block[][] map){
+        double wacc = super.onTheGround?this.walkAcc:this.walkAccInAir;
+        double sacc = super.onTheGround?this.stopAcc:this.stopAccInAir;
+
+
         if(this.walkRight || (this.speedX<0 && !this.walkLeft)){
-            super.accX = this.walkAcc;
+            super.accX = wacc;
         }else if(this.walkLeft || this.speedX>0){
-            super.accX = -this.walkAcc;
+            super.accX = -wacc;
         }
         if(this.speedX<0 && !this.walkLeft){
-            super.accX = this.stopAcc;
-            if(Math.abs(this.speedX)<(this.walkAcc*dt)){ // avoid speed oscillation
+            super.accX = sacc;
+            if(Math.abs(this.speedX)<=(this.stopAcc*dt)){ // avoid speed oscillation
                 super.speedX = 0;
                 super.accX = 0;
             }
         }
         if(this.speedX>0 && !this.walkRight){
-            super.accX = -this.stopAcc;
-            if(Math.abs(this.speedX)<(this.walkAcc*dt)){
+            super.accX = -sacc;
+            if(Math.abs(this.speedX)<=(this.stopAcc*dt)){
                 super.speedX = 0;
                 super.accX = 0;
             }
         }
-        System.out.println("acc: "+super.accX);
-        System.out.println("v "+super.accX);
-
         super.update(dt, map);
     }
 
