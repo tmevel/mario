@@ -8,35 +8,40 @@ import java.io.*;
 import java.util.ArrayList;
 
 
-public class Server extends Thread{
-    private Game game;
+public abstract class Server extends Thread{
+    protected ModelThread model;
     private ServerSocket ss;
     private ArrayList<Session> sessions;
+    private final int PORT = 3000;
 
-    public Server(int port) throws IOException{
-        //Game Parameters
-        Block[][] map = new Block[40][10];
-        map[5][7] = new BaseBlock();
-        map[12][5] = new BaseBlock();
-        map[13][5] = new QuestionBlock();
-        map[14][5] = new BaseBlock();
-        for(int x=0;x<map.length;x++){
-            map[x][0] = new BaseBlock();
-        }
-        game = new Game(map);
-        SmallPlayer sp = new SmallPlayer(15,1, game);
-        game.addEntity(sp);
-        ss = new ServerSocket(port);
+    public Server() throws IOException{
+        this.initLevel();
+        ss = new ServerSocket(PORT);
         this.sessions = new ArrayList<Session>();
     }
 
+    protected abstract void initLevel();
 
+    public ModelThread getModel(){
+        return this.model;
+    }
+
+    public void notifyAllSessions(){
+        for(Session s:this.sessions){
+            try {
+                s.updateClient();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void run() {
+        this.model.start();
         while (true) {
             try {
                 System.out.println("waiting for connection");
-                Session s = new Session(this.game, ss.accept());
+                Session s = new Session(ss.accept(), this);
                 System.out.println("connection...");
                 sessions.add(s);
                 s.start();
@@ -45,41 +50,5 @@ public class Server extends Thread{
                 e.printStackTrace();
             }
         }
-    }
-
-
-    public void runModel(){
-
-
-        while(true) {
-
-            if(this.sessions.size()==0) {
-            }else if (this.sessions.get(0).getControl().goLeft() && this.sessions.get(0).getControl().goRight()) {
-            } else if (this.sessions.get(0).getControl().goLeft()) {
-                //this.game.getEntities().get(0).decX();
-            } else if (this.sessions.get(0).getControl().goRight()) {
-                //this.game.getEntities().get(0).incX();
-            }
-
-            try {
-                Thread.sleep(10);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void close() throws IOException {
-        //TODO close all sessions
-    }
-
-    //I used two main functions for the server and the client
-    public static void main(String[] args) throws Exception {
-        System.out.println("Server");
-        Server server = new Server(12345);
-        server.start();
-        server.runModel();
-        Thread.sleep(600000);
-        server.close();
     }
 }

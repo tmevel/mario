@@ -12,6 +12,11 @@ public class Game implements Serializable {
         this.entities = new ArrayList<Entity>();
     }
 
+    public Game(Block[][] map, ArrayList<Entity> entities){
+        this.map = map;
+        this.entities = entities;
+    }
+
     public ArrayList<Entity> getEntities() {
         return entities;
     }

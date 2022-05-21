@@ -1,7 +1,5 @@
 package hu.bme.mario.client;
 
-import hu.bme.mario.localtesting.FakeClientInterface;
-import hu.bme.mario.localtesting.FakeGameController;
 import hu.bme.mario.network.ClientInterface;
 
 import javax.swing.*;
@@ -9,6 +7,7 @@ import java.io.*;
 
 public class GameFrame extends JFrame {
     private GameDisplay display;
+    private DisplayUpdateThread displayUpdateThread;
 
     public GameFrame() throws IOException{
         this.setSize(1600,800);
@@ -18,9 +17,11 @@ public class GameFrame extends JFrame {
         this.setVisible(true);
         //ClientInterface ci = new ClientInterface("127.0.0.1", 12345, this.display);
         //this.addKeyListener(new GameController(ci));
-        FakeClientInterface ci = new FakeClientInterface(this.display);
+        ClientInterface ci = new ClientInterface("127.0.0.1");
         ci.start();
-        this.addKeyListener(new FakeGameController(ci));
+        this.addKeyListener(new GameController(ci));
+        this.displayUpdateThread = new DisplayUpdateThread(display, ci);
+        this.displayUpdateThread.start();
 
     }
     public static void main(String[] args){

@@ -1,8 +1,8 @@
 package hu.bme.mario.network;
 
 import hu.bme.mario.client.GameDisplay;
-import hu.bme.mario.client.GameFrame;
 import hu.bme.mario.model.Game;
+import hu.bme.mario.model.ModelThread;
 
 import java.awt.event.KeyEvent;
 import java.io.*;
@@ -11,36 +11,44 @@ import java.net.*;
 public class ClientInterface extends Thread{
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private GameDisplay display;
     private KeyControl control;
+    private ModelThread model;
 
-    public ClientInterface(String ip, int port, GameDisplay display) throws IOException{
-        Socket s = new Socket(ip, port);
+    private final int PORT = 3000;
+
+    public ClientInterface(String ip) throws IOException{
+        Socket s = new Socket(ip, PORT);
         this.oos = new ObjectOutputStream(s.getOutputStream());
         this.ois = new ObjectInputStream(s.getInputStream());
-        this.display = display;
         this.control = new KeyControl();
+        this.forceRetrieveGame();
+        this.model.start();
+    }
+
+    public Game getLocalGame(){
+        return this.model.getGame();
+    }
+
+    private void forceRetrieveGame() throws IOException{
+        this.oos.writeObject(null);
+        try {
+            Game g = (Game) this.ois.readObject();
+            this.model = new ModelThread(g);
+        }catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     public void run(){
         Game g;
         while(true){
             try{
-                long l = System.currentTimeMillis();
-                Thread.sleep(20);
-                this.oos.writeObject(null);
                 g = (Game) this.ois.readObject();
-                this.display.displayGame(g);
-                System.out.println(System.currentTimeMillis()-l);
+                this.model.setGame(g);
             }catch(Exception e){
                 e.printStackTrace();
             }
         }
-    }
-
-
-    public void close() throws IOException{
-        //TODO
     }
 
     public void sendKeyEvent(KeyEvent ke){
