@@ -1,10 +1,7 @@
 package hu.bme.mario.network;
 
 import hu.bme.mario.client.GameFrame;
-import hu.bme.mario.model.BaseBlock;
-import hu.bme.mario.model.Block;
-import hu.bme.mario.model.Game;
-import hu.bme.mario.model.SmallPlayer;
+import hu.bme.mario.model.*;
 
 import java.net.*;
 import java.io.*;
@@ -21,13 +18,13 @@ public class Server extends Thread{
         Block[][] map = new Block[40][10];
         map[5][7] = new BaseBlock();
         map[12][5] = new BaseBlock();
-        map[13][5] = new BaseBlock();
+        map[13][5] = new QuestionBlock();
         map[14][5] = new BaseBlock();
         for(int x=0;x<map.length;x++){
             map[x][0] = new BaseBlock();
         }
-        SmallPlayer sp = new SmallPlayer(15,1);
         game = new Game(map);
+        SmallPlayer sp = new SmallPlayer(15,1, game);
         game.addEntity(sp);
         ss = new ServerSocket(port);
         this.sessions = new ArrayList<Session>();

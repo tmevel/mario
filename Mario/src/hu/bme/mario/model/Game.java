@@ -22,7 +22,7 @@ public class Game implements Serializable {
 
     public void update(double dt){
         for(int i=0;i<this.entities.size();i++){
-            this.entities.get(i).update(dt, this.map);
+            this.entities.get(i).update(dt);
         }
     }
 

@@ -58,7 +58,9 @@ public class GameDisplay extends JPanel {
     public void displayGame(Game game){
         paintBackground();
         paintBlocks(game.getMap());
-        paintEntity(game.getEntities().get(0));
+        for(Entity e : game.getEntities()) {
+            paintEntity(e);
+        }
         recomputeCamera(game);
         this.repaint();
     }
@@ -123,7 +125,7 @@ public class GameDisplay extends JPanel {
         }
 
         if(e.isLookingLeft()){
-            this.buf.getGraphics().drawImage(texture, (int)(pixPerBlock*(e.getX()-this.cameraX)), this.buf.getHeight()-((int)(pixPerBlock*e.getY())+(int)(pixPerBlock*et.getHeight())), (int)(pixPerBlock*et.getWidth()), (int)(pixPerBlock*et.getHeight()), null);
+            this.buf.getGraphics().drawImage(texture, (int)(pixPerBlock*(e.getX()-this.cameraX))+(int)(pixPerBlock*et.getWidth()), this.buf.getHeight()-((int)(pixPerBlock*e.getY())+(int)(pixPerBlock*et.getHeight())), -(int)(pixPerBlock*et.getWidth()), (int)(pixPerBlock*et.getHeight()), null);
 
         }else{
             this.buf.getGraphics().drawImage(texture, (int)(pixPerBlock*(e.getX()-this.cameraX)), this.buf.getHeight()-((int)(pixPerBlock*e.getY())+(int)(pixPerBlock*et.getHeight())), (int)(pixPerBlock*et.getWidth()), (int)(pixPerBlock*et.getHeight()), null);

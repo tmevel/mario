@@ -1,9 +1,8 @@
 package hu.bme.mario.model;
 
-public class SmallPlayer extends Player{
-    public SmallPlayer(double x, double y, Game game){
-        super(x,y,new Hitbox(0.8,1.6), game);
-
+public abstract class Enemy extends DumbEntity{
+    public Enemy(double x, double y, Hitbox hitbox, Direction initialDir, Game game) {
+        super(x, y, hitbox, initialDir, game);
     }
 
     protected void collideWithEntity(Direction collisionSide, Entity e){

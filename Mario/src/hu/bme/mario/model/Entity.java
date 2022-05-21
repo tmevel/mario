@@ -13,8 +13,9 @@ public abstract class Entity implements Serializable {
     protected Hitbox hitbox;
     protected boolean isLookingLeft;
     protected boolean onTheGround;
+    protected Game game;
 
-    public Entity(double x, double y, double speedX, double speedY, double accX, double accY, Hitbox hitbox){
+    public Entity(double x, double y, double speedX, double speedY, double accX, double accY, Hitbox hitbox, Game game){
         this.x = x;
         this.y = y;
         this.speedX = speedX;
@@ -24,6 +25,7 @@ public abstract class Entity implements Serializable {
         this.hitbox = hitbox;
         this.onTheGround = false;
         this.isLookingLeft = false;
+        this.game = game;
     }
 
     public boolean isLookingLeft() {
@@ -48,7 +50,10 @@ public abstract class Entity implements Serializable {
     protected abstract double getMaxSpeedX();
     protected abstract double getMaxSpeedY();
 
-    public void update(double dt, Block[][] map){
+    public abstract void collideWithBlock(Direction collisionSide, int x, int y);
+    protected abstract void collideWithEntity(Direction collisionSide, Entity e);
+
+    public void update(double dt){
 
         this.onTheGround = false;
 
@@ -62,11 +67,15 @@ public abstract class Entity implements Serializable {
 
 
         //in case of collision, go back to past position and reset Yspeed
-        if(Hitbox.collisionMap(map, this)){
-            this.speedY = 0;
-            if(Hitbox.onGround(map, this)) {
+        Direction d = Direction.TOP;
+        if(this.y < lastY){
+            d = Direction.BOTTOM;
+        }
+        if(Hitbox.collisionMap(this.game.getMap(), this, d)) {
+            if(Hitbox.onGround(this.game.getMap(), this)) {
                 this.onTheGround = true;
             }
+            this.speedY = 0;
             this.y = lastY;
         }
 
@@ -76,7 +85,11 @@ public abstract class Entity implements Serializable {
 
 
         //in case of collision, go back to past position and reset Xspeed
-        if(Hitbox.collisionMap(map, this)){
+        d = Direction.RIGHT;
+        if(this.x < lastX){
+            d = Direction.LEFT;
+        }
+        if(Hitbox.collisionMap(this.game.getMap(), this, d)){
             this.x = lastX;
             this.speedX = 0;
         }

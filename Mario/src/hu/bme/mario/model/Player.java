@@ -10,8 +10,8 @@ public abstract class Player extends Entity {
     private boolean walkRight = false;
     private boolean walkLeft = false;
 
-    public Player(double x, double y, Hitbox hitbox){
-        super(x,y,0,0,0,0, hitbox);
+    public Player(double x, double y, Hitbox hitbox, Game game){
+        super(x,y,0,0,0,0, hitbox, game);
     }
 
     public void jump(){
@@ -34,7 +34,7 @@ public abstract class Player extends Entity {
         this.walkRight = false;
     }
 
-    public void update(double dt, Block[][] map){
+    public void update(double dt){
         double wacc = super.onTheGround?this.walkAcc:this.walkAccInAir;
         double sacc = super.onTheGround?this.stopAcc:this.stopAccInAir;
 
@@ -58,7 +58,7 @@ public abstract class Player extends Entity {
                 super.accX = 0;
             }
         }
-        super.update(dt, map);
+        super.update(dt);
     }
 
 
@@ -67,4 +67,11 @@ public abstract class Player extends Entity {
         return 12;
     }
     protected double getMaxSpeedY(){ return 60; }
+    public void collideWithBlock(Direction motion, int x, int y){
+        if(motion == Direction.TOP){
+            if (QuestionBlock.class.equals(super.game.getMap()[x][y].getClass())) {
+                super.game.getMap()[x][y] = new BaseBlock();
+            }
+        }
+    }
 }

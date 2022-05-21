@@ -15,14 +15,19 @@ public class FakeServer extends Thread{
         Block[][] map = new Block[40][10];
         map[5][7] = new BaseBlock();
         map[12][5] = new BaseBlock();
-        map[13][5] = new BaseBlock();
+        map[13][5] = new QuestionBlock();
         map[14][5] = new BaseBlock();
+        map[13][1] = new BaseBlock();
+        map[18][1] = new BaseBlock();
         for(int x=0;x<map.length;x++){
             map[x][0] = new BaseBlock();
         }
-        SmallPlayer sp = new SmallPlayer(15,4);
         game = new Game(map);
+        SmallPlayer sp = new SmallPlayer(15,4, game);
+
         game.addEntity(sp);
+        Goomba g = new Goomba(15,4, Direction.RIGHT, game);
+        game.addEntity(g);
         this.sessions = new ArrayList<FakeSession>();
     }
 
