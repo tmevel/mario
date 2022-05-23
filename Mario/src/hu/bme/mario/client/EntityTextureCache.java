@@ -80,16 +80,16 @@ public class EntityTextureCache extends HashMap<Class, EntityTexture> {
             goomba[0] = ImageIO.read(new File(goombaPath1));
             goomba[1] = ImageIO.read(new File(goombaPath2));
             this.put(Goomba.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(goombaPath1))), new AnimatedTexture(goomba,0.3),1,1, 0,0));
-            BufferedImage[] koopa = new BufferedImage[2];
-            koopa[0] = ImageIO.read(new File(koopaPath1));
-            koopa[1] = ImageIO.read(new File(koopaPath2));
-            this.put(Koopa.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(koopaPath1))), new AnimatedTexture(koopa,0.3),1,1, 0,0));
+            //BufferedImage[] koopa = new BufferedImage[2];
+            //koopa[0] = ImageIO.read(new File(koopaPath1));
+            //koopa[1] = ImageIO.read(new File(koopaPath2));
+            //this.put(Koopa.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(koopaPath1))), new AnimatedTexture(koopa,0.3),1,1, 0,0));
 
             this.put(Mushroom.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(mushroomPath))), new UnanimatedTexture(ImageIO.read(new File(mushroomPath))), 1,1, 0, 0));
             this.put(FireBall.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(firePath))), new UnanimatedTexture(ImageIO.read(new File(firePath))), 0.4,0.4, 0, 0));
             this.put(Flower.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(flowerPath))), new UnanimatedTexture(ImageIO.read(new File(flowerPath))), 1,1, 0, 0));
             this.put(Star.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(starPath))), new UnanimatedTexture(ImageIO.read(new File(starPath))), 1.2,1.2, 0, 0));
-            this.put(KoopaShell.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(shellPath))), new UnanimatedTexture(ImageIO.read(new File(shellPath))), 1,1, 0, 0));
+            //this.put(KoopaShell.class, new EntityTexture(new UnanimatedTexture(ImageIO.read(new File(shellPath))), new UnanimatedTexture(ImageIO.read(new File(shellPath))), 1,1, 0, 0));
         }catch(Exception e){
             e.printStackTrace();
         }
