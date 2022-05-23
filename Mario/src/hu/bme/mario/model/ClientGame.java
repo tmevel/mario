@@ -9,6 +9,8 @@ public class ClientGame extends Game{
     }
 
     public Player getPlayer(){
-        return super.getPlayers().get(this.playerID);
+        synchronized (this){
+            return super.getPlayers().get(this.playerID);
+        }
     }
 }

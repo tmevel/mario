@@ -19,9 +19,9 @@ public class GameDisplay extends JPanel {
     private BlockTextureCache blockTextures;
     private EntityTextureCache entityTextures;
     private BufferedImage background;
-    private BufferedImage background_dead;
-    private BufferedImage background_win;
-    private BufferedImage background_loose;
+    private BufferedImage dead;
+    private BufferedImage won;
+    private BufferedImage lost;
 
     private String os;
     private String path;
@@ -47,7 +47,9 @@ public class GameDisplay extends JPanel {
 
         try {
             this.background = ImageIO.read(new File(path+"background.png"));
-            this.background_dead = ImageIO.read(new File(path+"background_ded.png"));
+            this.dead = ImageIO.read(new File(path+"dead.png"));
+            this.lost = ImageIO.read(new File(path+"lost.png"));
+            this.won = ImageIO.read(new File(path+"won.png"));
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -65,6 +67,14 @@ public class GameDisplay extends JPanel {
                 paintEntity(game.getEntities().get(i));
             }
             recomputeCamera(game);
+            this.paintStars(game);
+            if(game.getPlayer().isDead()){
+                this.paintDead();
+            }else if(game.getPlayer() == game.getWinner()){
+                this.paintWon();
+            }else if(game.getWinner()!=null){
+                this.paintLost();
+            }
         }
         this.repaint();
     }
@@ -94,13 +104,6 @@ public class GameDisplay extends JPanel {
         int xBegin = -((int)(cameraX*scrollRatioBackground*pixPerBlock))%backgroundPictureWidth;
 
         Graphics g = this.buf.getGraphics();
-
-        if(isDead){
-            for(int i=0;i<multipleBackground;i++) {
-                g.drawImage(background_dead, xBegin + i*backgroundPictureWidth, 0, backgroundPictureWidth, this.buf.getHeight(), null);
-            }
-            return;
-        }
 
         for(int i=0;i<multipleBackground;i++) {
             g.drawImage(background, xBegin + i*backgroundPictureWidth, 0, backgroundPictureWidth, this.buf.getHeight(), null);
@@ -158,5 +161,21 @@ public class GameDisplay extends JPanel {
         }else if(centerEntity.getX()<this.cameraX+this.marginX){
             this.cameraX = Math.max(centerEntity.getX()-this.marginX, 0);
         }
+    }
+
+    private void paintStars(ClientGame g){
+        int nStars = g.getPlayer().getStarCount();
+        for(int i=0;i<nStars;i++){
+            this.buf.getGraphics().drawImage(this.entityTextures.get(Star.class).getStandingTexture(), 40*i, 0, 40, 40, null);
+        }
+    }
+    private void paintWon(){
+        this.buf.getGraphics().drawImage(this.won, 300, 200, 1000, 300, null);
+    }
+    private void paintLost(){
+        this.buf.getGraphics().drawImage(this.lost, 300, 200, 1000, 300, null);
+    }
+    private void paintDead(){
+        this.buf.getGraphics().drawImage(this.dead, 300, 200, 1000, 300, null);
     }
 }

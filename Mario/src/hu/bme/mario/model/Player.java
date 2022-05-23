@@ -23,6 +23,13 @@ public abstract class Player extends Entity {
         super(x,y,0,0,0,0, hitbox, game);
     }
 
+    public int getStarCount(){
+        return this.starCount;
+    }
+    public void decStarCount(){
+        this.starCount--;
+    }
+
     public void jump(){
         if(this.onTheGround){
             super.speedY=jumpSpeed;
@@ -131,10 +138,10 @@ public abstract class Player extends Entity {
                 e.hasToBeRemoved = true;
             }else if(Player.class.isAssignableFrom(e.getClass())){
                 Player p = (Player)e;
-                if(!p.isProtected()){
+                if(!p.isProtected() && !p.isDead()){
                     if(collisionSide != Direction.TOP){
                         if(this.starCount>0) {
-                            this.starCount--;
+                            this.decStarCount();
                             this.game.addEntity(new Star(this.x, this.y, (this.x>e.x)?Direction.RIGHT:Direction.LEFT, this.game));
                         }
                         this.protect();

@@ -39,5 +39,22 @@ public class FireBall extends Entity {
     }
 
     protected void collideWithEntity(Direction collisionSide, Entity e) {
+        if (Player.class.isAssignableFrom(e.getClass())) {
+            Player p = (Player) e;
+            if (!p.isProtected() && this.owner != p) {
+
+                if (collisionSide == Direction.RIGHT) {
+                    p.speedX = -hitSpeed;
+                } else if (collisionSide == Direction.LEFT) {
+                    p.speedX = hitSpeed;
+                }
+
+                if (p.getStarCount() > 0) {
+                    p.decStarCount();
+                    this.game.addEntity(new Star(this.x, this.y, (this.x < e.x) ? Direction.RIGHT : Direction.LEFT, this.game));
+                }
+                p.protect();
+            }
+        }
     }
 }

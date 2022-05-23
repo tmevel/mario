@@ -42,6 +42,16 @@ public class Game implements Serializable {
         return players;
     }
 
+    public Player getWinner(){
+        for(int i=0;i<this.players.size();i++){
+            if(this.players.get(i).getStarCount()>=5){
+                System.out.println(i);
+                return this.players.get(i);
+            }
+        }
+        return null;
+    }
+
     public Block[][] getMap() {
         return map;
     }

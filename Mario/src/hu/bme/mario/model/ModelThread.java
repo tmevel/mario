@@ -1,7 +1,7 @@
 package hu.bme.mario.model;
 
 public class ModelThread extends Thread{
-    private Game game;
+    protected Game game;
 
     public ModelThread(Game g){
         super();

@@ -27,21 +27,28 @@ public abstract class Server extends Thread{
     }
 
     public void notifyAllSessions(){
-        for(Session s:this.sessions){
-            try {
-                s.updateClient();
-            }catch(Exception e){
-                e.printStackTrace();
+        synchronized (this.sessions){
+            for(Session s:this.sessions){
+                try {
+                    s.updateClient();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     public void removeSession(Session s){
-        this.sessions.remove(s);
+        synchronized (this.sessions) {
+            this.sessions.remove(s);
+        }
+    }
+
+    public void startModel(){
+        this.model.start();
     }
 
     public void run() {
-        this.model.start();
         while (true) {
             try {
                 System.out.println("waiting for connection");

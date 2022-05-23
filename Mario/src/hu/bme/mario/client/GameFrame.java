@@ -15,7 +15,8 @@ public class GameFrame extends JFrame {
         this.display = new GameDisplay();
         this.add(this.display);
         this.setVisible(true);
-        ClientInterface ci = new ClientInterface("127.0.0.1");
+        String ip=JOptionPane.showInputDialog(null,"server ip","127.0.0.1");
+        ClientInterface ci = new ClientInterface(ip);
         ci.start();
         this.addKeyListener(new GameController(ci));
         this.displayUpdateThread = new DisplayUpdateThread(display, ci);

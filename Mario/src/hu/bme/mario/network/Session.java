@@ -48,7 +48,9 @@ public class Session extends Thread{
     }
 
     private ClientGame getPlayerGame(){
-        return new ClientGame(this.server.getModel().getGame(), this.sessionID);
+        synchronized (this.server.getModel().getGame()){
+            return new ClientGame(this.server.getModel().getGame(), this.sessionID);
+        }
     }
 
     public void run() {

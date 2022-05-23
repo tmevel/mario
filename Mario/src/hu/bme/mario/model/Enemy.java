@@ -16,6 +16,11 @@ public abstract class Enemy extends DumbEntity{
                         p.speedX=hitSpeed;
                     }
 
+                    if(p.getStarCount()>0) {
+                        p.decStarCount();
+                        this.game.addEntity(new Star(this.x, this.y, (this.x<e.x)?Direction.RIGHT:Direction.LEFT, this.game));
+                    }
+
                     if(SmallPlayer.class.equals(p.getClass())){
                         p.kill();
                     }else if(NormalPlayer.class.equals(p.getClass())){
@@ -37,6 +42,10 @@ public abstract class Enemy extends DumbEntity{
                     super.hasToBeRemoved = true;
                 }
             }
+        }
+        if(FireBall.class.equals(e.getClass())){
+            super.hasToBeRemoved = true;
+            e.hasToBeRemoved = true;
         }
     }
 }

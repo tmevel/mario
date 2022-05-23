@@ -78,10 +78,10 @@ public class ClientInterface extends Thread{
                 this.oos.reset();
                 this.oos.writeObject(this.control);
             }
+            Thread.sleep(10);
         }catch(Exception e){
             e.printStackTrace();
             try {
-                this.oos.reset();
                 this.reconnect();
             }catch (Exception e2){
             }
