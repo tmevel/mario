@@ -1,12 +1,10 @@
 package hu.bme.mario.model;
 
-public class FireBall extends Entity {
+public class Star extends Entity {
     private boolean walkRight = false;
-    private Player owner;
 
-    public FireBall(double x, double y, Direction initialDir, Player owner){
-        super(x,y,0,0,0,0, new Hitbox(1.2, 1.2), owner.game);
-        this.owner = owner;
+    public Star(double x, double y, Direction initialDir, Game game){
+        super(x,y,0,0,0,0, new Hitbox(1.2, 1.2), game);
         if(initialDir == Direction.LEFT){
             this.walkRight = false;
         }else if(initialDir == Direction.RIGHT){
@@ -15,7 +13,7 @@ public class FireBall extends Entity {
     }
 
     protected double getMaxSpeedX() {
-        return 12;
+        return 8;
     }
 
     protected double getMaxSpeedY(){ return 12; }
@@ -33,8 +31,12 @@ public class FireBall extends Entity {
     }
 
     public void collideWithBlock(Direction motion, int x, int y){
-        if(motion == Direction.LEFT || motion == Direction.RIGHT){
-            this.hasToBeRemoved = true;
+        if(motion == Direction.LEFT){
+            super.isLookingLeft = false;
+            this.walkRight = true;
+        }else if(motion == Direction.RIGHT){
+            super.isLookingLeft = true;
+            this.walkRight = false;
         }
     }
 

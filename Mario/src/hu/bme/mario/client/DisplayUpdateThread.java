@@ -1,5 +1,6 @@
 package hu.bme.mario.client;
 
+import hu.bme.mario.model.ClientGame;
 import hu.bme.mario.model.Game;
 import hu.bme.mario.network.ClientInterface;
 
@@ -15,7 +16,7 @@ public class DisplayUpdateThread extends Thread{
     public void run(){
         double fps = 60;
         long tps = (long)(1000/fps);
-        Game g;
+        ClientGame g;
         while(true){
             try{
                 long l = System.currentTimeMillis()+tps;

@@ -15,16 +15,24 @@ public class Session extends Thread{
 
     private KeyControl control;
 
-    public Session(Socket s, Server serv) throws IOException {
+    public Session(Socket s, Server serv) throws IOException, ClassNotFoundException {
         this.server = serv;
         this.oos = new ObjectOutputStream(s.getOutputStream());
         this.ois = new ObjectInputStream(s.getInputStream());
         this.control = new KeyControl();
 
-        this.sessionID = this.server.getModel().getGame().getEntities().size();
-        this.server.getModel().getGame().addEntity(new SmallPlayer(this.sessionID, 5, this.server.getModel().getGame()));
+        Object o = this.ois.readObject();
+        if(o==null){
+            this.sessionID = this.server.getModel().getGame().getPlayers().size();
+            this.server.getModel().getGame().addPlayer(new SmallPlayer(this.sessionID+1, 5, this.server.getModel().getGame()));
+        }else{
+            this.sessionID = ((Integer)o).intValue(); //reconnection
+        }
+        this.oos.writeObject(new Integer(this.sessionID));
         this.server.notifyAllSessions();
     }
+
+
 
     public KeyControl getControl(){
         return this.control;
@@ -34,48 +42,53 @@ public class Session extends Thread{
         return this.sessionID;
     }
 
-    public void updateClient() throws IOException{
+    public synchronized void updateClient() throws IOException{
         this.oos.reset();
         this.oos.writeObject(this.getPlayerGame());
     }
 
-    private Game getPlayerGame(){
-        ArrayList<Entity> list = new ArrayList<>(this.server.getModel().getGame().getEntities());
-        Entity player = list.get(this.sessionID);
-        list.set(this.sessionID, list.get(0));
-        list.set(0, player);
-        return new Game(this.server.getModel().getGame().getMap(), list);
+    private ClientGame getPlayerGame(){
+        return new ClientGame(this.server.getModel().getGame(), this.sessionID);
     }
 
-    public void run(){
-        try{
-            while(true){
+    public void run() {
+        try {
+            while (true) {
                 Object o = this.ois.readObject();
-                if(o!=null){
+                if (o != null) {
                     this.control = (KeyControl) o;
 
-                    Player p = (Player)this.server.getModel().getGame().getEntities().get(this.sessionID);
+                    Player p = this.getPlayerGame().getPlayer();
                     if (this.control.goLeft() && this.control.goRight()) {
                         p.stop();
                     } else if (this.control.goLeft()) {
                         p.walkLeft();
                     } else if (this.control.goRight()) {
                         p.walkRight();
-                    }else{
+                    } else {
                         p.stop();
                     }
-                    if(this.control.jump()){
+                    if (this.control.jump()) {
                         p.jump();
+                    }
+                    if (this.control.special()) {
+                        p.special();
                     }
                     this.server.notifyAllSessions();
                 } else {
-                    this.oos.reset();
-                    this.oos.writeObject(this.getPlayerGame());
+                    this.updateClient();
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+            try{
+                this.oos.close();
+                this.ois.close();
+                System.out.println("connection error, closed");
+            }catch(Exception e2){
+                e2.printStackTrace();
+            }
+            this.server.removeSession(this);
         }
     }
-
 }

@@ -36,6 +36,10 @@ public abstract class Server extends Thread{
         }
     }
 
+    public void removeSession(Session s){
+        this.sessions.remove(s);
+    }
+
     public void run() {
         this.model.start();
         while (true) {

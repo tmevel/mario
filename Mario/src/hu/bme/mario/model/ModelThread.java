@@ -21,13 +21,20 @@ public class ModelThread extends Thread{
         long tps = (long)(1000/fps);
 
         while(true) {
-            long l = System.currentTimeMillis()+tps;
-            this.game.update((double)tps/1000);
-            try {
-                Thread.sleep(Math.max(0,l-System.currentTimeMillis()));
-            } catch (Exception e) {
+            try{
+                long l = System.currentTimeMillis()+tps;
+                synchronized (this.game){
+                    this.game.update((double)tps/1000);
+                }
+                try {
+                    Thread.sleep(Math.max(0,l-System.currentTimeMillis()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }catch(Exception e){
                 e.printStackTrace();
             }
+
         }
     }
 

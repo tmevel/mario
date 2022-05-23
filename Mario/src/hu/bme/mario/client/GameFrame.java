@@ -9,14 +9,12 @@ public class GameFrame extends JFrame {
     private GameDisplay display;
     private DisplayUpdateThread displayUpdateThread;
 
-    public GameFrame() throws IOException{
+    public GameFrame() throws IOException, ClassNotFoundException{
         this.setSize(1600,800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.display = new GameDisplay();
         this.add(this.display);
         this.setVisible(true);
-        //ClientInterface ci = new ClientInterface("127.0.0.1", 12345, this.display);
-        //this.addKeyListener(new GameController(ci));
         ClientInterface ci = new ClientInterface("127.0.0.1");
         ci.start();
         this.addKeyListener(new GameController(ci));

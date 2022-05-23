@@ -7,6 +7,7 @@ public class KeyControl implements Serializable {
     private boolean right = false;
     private boolean left = false;
     private boolean up = false;
+    private boolean special = false;
 
     public boolean updateAndCheckChanged(KeyEvent ke){
         boolean changed = false;
@@ -27,6 +28,12 @@ public class KeyControl implements Serializable {
                 }
                 up = true;
             }
+            else if(ke.getKeyCode()==KeyEvent.VK_SPACE){
+                if(!special){
+                    changed = true;
+                }
+                special = true;
+            }
         }else if(ke.getID() == KeyEvent.KEY_RELEASED){
             if(ke.getKeyCode()==KeyEvent.VK_RIGHT){
                 if(right){
@@ -43,6 +50,11 @@ public class KeyControl implements Serializable {
                     changed = true;
                 }
                 up = false;
+            }else if(ke.getKeyCode()==KeyEvent.VK_SPACE){
+                if(special){
+                    changed = true;
+                }
+                special = false;
             }
         }
 
@@ -57,5 +69,8 @@ public class KeyControl implements Serializable {
     }
     public boolean jump(){
         return this.up;
+    }
+    public boolean special(){
+        return this.special;
     }
 }

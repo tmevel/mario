@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public abstract class Entity implements Serializable {
     private static final double GRAVITY = -40;
+    protected static final double rebounceSpeed = 12;
+    protected static final double hitSpeed = 8;
     protected double x;
     protected double y;
     protected double speedX;
@@ -14,6 +16,7 @@ public abstract class Entity implements Serializable {
     protected boolean isLookingLeft;
     protected boolean onTheGround;
     protected Game game;
+    protected boolean hasToBeRemoved = false;
 
     public Entity(double x, double y, double speedX, double speedY, double accX, double accY, Hitbox hitbox, Game game){
         this.x = x;
@@ -34,6 +37,9 @@ public abstract class Entity implements Serializable {
 
     public boolean isMoving(){
         return this.speedX!=0;
+    }
+    public boolean isToBeRemoved(){
+        return this.hasToBeRemoved;
     }
 
     public double getX(){
@@ -92,6 +98,15 @@ public abstract class Entity implements Serializable {
         if(Hitbox.collisionMap(this.game.getMap(), this, d)){
             this.x = lastX;
             this.speedX = 0;
+        }
+
+        for(Entity e : this.game.getEntities()){
+            if(e!=this){
+                Direction dirCol = Hitbox.collisionEntity(this, e);
+                if(dirCol!=null){
+                    this.collideWithEntity(dirCol, e);
+                }
+            }
         }
     }
 }

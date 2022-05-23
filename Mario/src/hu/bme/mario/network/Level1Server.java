@@ -17,12 +17,21 @@ public class Level1Server extends Server{
         map[12][5] = new BaseBlock();
         map[13][5] = new QuestionBlock();
         map[14][5] = new BaseBlock();
+        map[13][1] = new BaseBlock();
+        map[17][1] = new BaseBlock();
         for(int x=0;x<map.length;x++){
             map[x][0] = new BaseBlock();
+        }
+        map[8][0] = null;
+        for(int y=0;y<map[0].length;y++){
+            map[0][y] = new BaseBlock();
+            map[map.length-1][y] = new BaseBlock();
         }
         Game game = new Game(map);
         Goomba g = new Goomba(15,4, Direction.RIGHT, game);
         game.addEntity(g);
+        Star s = new Star(15,4, Direction.RIGHT, game);
+        game.addEntity(s);
 
         super.model = new ModelThread(game);
     }

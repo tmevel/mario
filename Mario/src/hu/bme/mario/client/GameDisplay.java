@@ -1,15 +1,13 @@
 package hu.bme.mario.client;
 
-import hu.bme.mario.model.Block;
-import hu.bme.mario.model.Entity;
-import hu.bme.mario.model.Game;
-import hu.bme.mario.model.Player;
+import hu.bme.mario.model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.AttributedCharacterIterator;
 
 public class GameDisplay extends JPanel {
     private final double marginX = 8;
@@ -21,6 +19,9 @@ public class GameDisplay extends JPanel {
     private BlockTextureCache blockTextures;
     private EntityTextureCache entityTextures;
     private BufferedImage background;
+    private BufferedImage background_dead;
+    private BufferedImage background_win;
+    private BufferedImage background_loose;
 
     private String os;
     private String path;
@@ -38,14 +39,15 @@ public class GameDisplay extends JPanel {
 
         os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
-            path = "Mario/textures/background.png";
+            path = "Mario/textures/";
         }
         else if (os.contains("nix") || os.contains("aix") || os.contains("nux")){
-            path = "textures/background.png";
+            path = "textures/";
         }
 
         try {
-            this.background = ImageIO.read(new File(path));
+            this.background = ImageIO.read(new File(path+"background.png"));
+            this.background_dead = ImageIO.read(new File(path+"background_ded.png"));
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -55,13 +57,15 @@ public class GameDisplay extends JPanel {
         this.cameraX = cx;
     }
 
-    public void displayGame(Game game){
-        paintBackground();
-        paintBlocks(game.getMap());
-        for(Entity e : game.getEntities()) {
-            paintEntity(e);
+    public void displayGame(ClientGame game){
+        synchronized (game){
+            paintBackground(game.getPlayer().isDead());
+            paintBlocks(game.getMap());
+            for(int i=0;i<game.getEntities().size();i++){
+                paintEntity(game.getEntities().get(i));
+            }
+            recomputeCamera(game);
         }
-        recomputeCamera(game);
         this.repaint();
     }
 
@@ -78,7 +82,7 @@ public class GameDisplay extends JPanel {
 
     }
 
-    private void paintBackground(){
+    private void paintBackground(boolean isDead){
 
         double pixPerBlock = this.buf.getHeight()/this.displayHeightInBlock;
 
@@ -90,6 +94,13 @@ public class GameDisplay extends JPanel {
         int xBegin = -((int)(cameraX*scrollRatioBackground*pixPerBlock))%backgroundPictureWidth;
 
         Graphics g = this.buf.getGraphics();
+
+        if(isDead){
+            for(int i=0;i<multipleBackground;i++) {
+                g.drawImage(background_dead, xBegin + i*backgroundPictureWidth, 0, backgroundPictureWidth, this.buf.getHeight(), null);
+            }
+            return;
+        }
 
         for(int i=0;i<multipleBackground;i++) {
             g.drawImage(background, xBegin + i*backgroundPictureWidth, 0, backgroundPictureWidth, this.buf.getHeight(), null);
@@ -113,6 +124,11 @@ public class GameDisplay extends JPanel {
     }
 
     private void paintEntity(Entity e){
+        if(Player.class.isAssignableFrom(e.getClass())){
+            if(((Player)e).isDead()){
+                return;
+            }
+        }
         int pixPerBlock = (int)(this.buf.getHeight()/this.displayHeightInBlock);
         EntityTexture et = this.entityTextures.get(e.getClass());
 
@@ -132,8 +148,8 @@ public class GameDisplay extends JPanel {
         }
     }
 
-    private void recomputeCamera(Game g){
-        Entity centerEntity = g.getEntities().get(0);
+    private void recomputeCamera(ClientGame g){
+        Entity centerEntity = g.getPlayer();
 
         double pixPerBlock = this.buf.getHeight()/this.displayHeightInBlock;
 
@@ -142,7 +158,5 @@ public class GameDisplay extends JPanel {
         }else if(centerEntity.getX()<this.cameraX+this.marginX){
             this.cameraX = Math.max(centerEntity.getX()-this.marginX, 0);
         }
-
-
     }
 }
