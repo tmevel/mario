@@ -13,7 +13,7 @@ public class NormalPlayer extends Player{
             this.newPlayer = new FirePlayer(this.x, this.y, this.game);
             this.newPlayer.speedX = this.speedX;
             this.newPlayer.speedY = this.speedY;
-
+            this.newPlayer.starCount = this.starCount;
             e.hasToBeRemoved = true;
         }
         super.collideWithEntity(collisionSide, e);

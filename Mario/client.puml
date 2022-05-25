@@ -1,0 +1,103 @@
+@startuml
+class hu.bme.mario.client.GameFrame {
+- GameDisplay display
+- DisplayUpdateThread displayUpdateThread
++ {static} void main(String[])
+}
+class hu.bme.mario.network.ClientInterface {
+- ObjectInputStream ois
+- ObjectOutputStream oos
+- KeyControl control
+- ModelThread model
+- int PORT
+- int sessionID
+- String ip
+- void reconnect()
++ ClientGame getLocalGame()
+- void forceRetrieveGame()
++ void run()
++ void sendKeyEvent(KeyEvent)
+}
+class hu.bme.mario.client.DisplayUpdateThread {
+- GameDisplay display
+- ClientInterface clientInt
++ void run()
+}
+class hu.bme.mario.client.UnanimatedTexture {
+- Image texture
+- double cycleTime
++ Image getTexture()
+}
+interface hu.bme.mario.client.Texture {
++ Image getTexture()
+}
+class hu.bme.mario.client.EntityTextureCache {
++ void loadTextures()
+}
+class hu.bme.mario.client.GameDisplay {
+- double marginX
+- double displayHeightInBlock
+- double scrollRatioBackground
+- BufferedImage buf
+- BlockTextureCache blockTextures
+- EntityTextureCache entityTextures
+- BufferedImage background
+- BufferedImage dead
+- BufferedImage won
+- BufferedImage lost
+- String os
+- String path
+- double cameraX
++ void forceCameraX(double)
++ void displayGame(ClientGame)
+# void paintComponent(Graphics)
+- void paintBackground(boolean)
+- void paintBlocks(Block[][])
+- void paintBlock(Block,int,int)
+- void paintEntity(Entity)
+- void recomputeCamera(ClientGame)
+- void paintStars(ClientGame)
+- void paintWon()
+- void paintLost()
+- void paintDead()
+}
+class hu.bme.mario.client.AnimatedTexture {
+- Image[] frames
+- double cycleTime
++ Image getTexture()
+}
+class hu.bme.mario.client.GameController {
+~ ClientInterface networkInterface
++ void keyPressed(KeyEvent)
++ void keyReleased(KeyEvent)
++ void keyTyped(KeyEvent)
+}
+class hu.bme.mario.client.BlockTextureCache {
++ void loadTextures()
+}
+class hu.bme.mario.client.EntityTexture {
+- Texture standing
+- Texture moving
+- double width
+- double height
+- int spriteOffsetX
+- int spriteOffsetY
++ Image getMovingTexture()
++ Image getStandingTexture()
++ double getWidth()
++ double getHeight()
++ int getSpriteOffsetX()
++ int getSpriteOffsetY()
+}
+
+
+hu.bme.mario.client.JFrame <|-- hu.bme.mario.client.GameFrame
+hu.bme.mario.network.Thread <|-- hu.bme.mario.network.ClientInterface
+hu.bme.mario.client.Thread <|-- hu.bme.mario.client.DisplayUpdateThread
+hu.bme.mario.client.Texture <|.. hu.bme.mario.client.UnanimatedTexture
+java.util.HashMap <|-- hu.bme.mario.client.EntityTextureCache
+hu.bme.mario.client.JPanel <|-- hu.bme.mario.client.GameDisplay
+hu.bme.mario.client.Texture <|.. hu.bme.mario.client.AnimatedTexture
+java.awt.event.KeyListener <|.. hu.bme.mario.client.GameController
+java.util.HashMap <|-- hu.bme.mario.client.BlockTextureCache
+@enduml

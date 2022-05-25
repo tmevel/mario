@@ -1,0 +1,142 @@
+@startuml
+abstract class hu.bme.mario.model.Player {
+- {static} double jumpSpeed
+- {static} double walkAcc
+- {static} double stopAcc
+- {static} double walkAccInAir
+- {static} double stopAccInAir
+- {static} double protectionDelay
+- double protection
+- boolean dead
+- boolean walkRight
+- boolean walkLeft
+- int starCount
+# Player newPlayer
++ int getStarCount()
++ void decStarCount()
++ void jump()
++ {abstract}void special()
++ boolean isDead()
++ void kill()
++ void walkRight()
++ void walkLeft()
++ void stop()
++ boolean isProtected()
++ void protect()
++ Player getNewPlayer()
++ void resetNewPlayer()
++ void update(double)
+# double getMaxSpeedX()
+# double getMaxSpeedY()
++ void collideWithBlock(Direction,int,int)
+# void collideWithEntity(Direction,Entity)
+}
+abstract class hu.bme.mario.model.Enemy {
+# void collideWithEntity(Direction,Entity)
+}
+class hu.bme.mario.model.NormalPlayer {
++ void special()
+# void collideWithEntity(Direction,Entity)
+}
+class hu.bme.mario.model.ModelThread {
+# Game game
++ Game getGame()
++ void setGame(Game)
++ void run()
+}
+abstract class hu.bme.mario.model.Block {
+}
+class hu.bme.mario.model.Mushroom {
+# double getMaxSpeedX()
+# void collideWithEntity(Direction,Entity)
+}
+abstract class hu.bme.mario.model.DumbEntity {
+- boolean walkRight
+# double getMaxSpeedY()
++ void update(double)
++ void collideWithBlock(Direction,int,int)
+}
+class hu.bme.mario.model.Goomba {
+# double getMaxSpeedX()
+}
+class hu.bme.mario.model.Game {
+- ArrayList<Entity> entities
+- ArrayList<Player> players
+- ArrayList<Entity> entitiesToBeAdded
+- Block[][] map
+- Block[][] mapInitial
+- {static} double resetMapDelay
+- double resetTime
+- void resetMap()
++ ArrayList<Entity> getEntities()
++ ArrayList<Player> getPlayers()
++ Player getWinner()
++ Block[][] getMap()
++ void update(double)
++ void addEntity(Entity)
++ void addPlayer(Player)
+}
+abstract class hu.bme.mario.model.Entity {
+- {static} double GRAVITY
+# {static} double rebounceSpeed
+# {static} double hitSpeed
+# double x
+# double y
+# double speedX
+# double speedY
+# double accX
+# double accY
+# Hitbox hitbox
+# boolean isLookingLeft
+# boolean onTheGround
+# Game game
+# boolean hasToBeRemoved
++ boolean isLookingLeft()
++ boolean isMoving()
++ boolean isToBeRemoved()
++ double getX()
++ double getY()
++ Hitbox getHitbox()
+# {abstract}double getMaxSpeedX()
+# {abstract}double getMaxSpeedY()
++ {abstract}void collideWithBlock(Direction,int,int)
+# {abstract}void collideWithEntity(Direction,Entity)
++ void update(double)
+}
+class hu.bme.mario.model.FirePlayer {
++ void special()
+# void collideWithEntity(Direction,Entity)
+}
+class hu.bme.mario.model.SmallPlayer {
++ void special()
+# void collideWithEntity(Direction,Entity)
+}
+class hu.bme.mario.model.Hitbox {
+- double width
+- double height
+- {static} double topBottomHitboxPercent
++ double getHeight()
++ double getWidth()
++ {static} Direction collisionEntity(Entity,Entity)
++ {static} boolean collisionMap(Block[][],Entity,Direction)
++ {static} boolean onGround(Block[][],Entity)
+}
+class hu.bme.mario.model.BaseBlock {
+}
+
+
+hu.bme.mario.model.Entity <|-- hu.bme.mario.model.Player
+hu.bme.mario.model.DumbEntity <|-- hu.bme.mario.model.Enemy
+hu.bme.mario.model.Player <|-- hu.bme.mario.model.NormalPlayer
+hu.bme.mario.model.Thread <|-- hu.bme.mario.model.ModelThread
+java.io.Serializable <|.. hu.bme.mario.model.Block
+hu.bme.mario.model.DumbEntity <|-- hu.bme.mario.model.Mushroom
+hu.bme.mario.model.Entity <|-- hu.bme.mario.model.DumbEntity
+hu.bme.mario.model.Enemy <|-- hu.bme.mario.model.Goomba
+java.io.Serializable <|.. hu.bme.mario.model.Game
+java.io.Serializable <|.. hu.bme.mario.model.Entity
+hu.bme.mario.model.Player <|-- hu.bme.mario.model.FirePlayer
+hu.bme.mario.model.Player <|-- hu.bme.mario.model.SmallPlayer
+java.io.Serializable <|.. hu.bme.mario.model.Hitbox
+hu.bme.mario.model.Block <|-- hu.bme.mario.model.BaseBlock
+@enduml

@@ -15,7 +15,7 @@ public abstract class Player extends Entity {
     private boolean walkRight = false;
     private boolean walkLeft = false;
 
-    private int starCount = 0;
+    protected int starCount = 0;
 
     protected Player newPlayer = null; //if flower/mushroom/damage take
 
@@ -25,6 +25,9 @@ public abstract class Player extends Entity {
 
     public int getStarCount(){
         return this.starCount;
+    }
+    public void setStarCount(int starCount){
+        this.starCount = starCount;
     }
     public void decStarCount(){
         this.starCount--;

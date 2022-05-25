@@ -41,6 +41,7 @@ public class Level1ModelThread extends ModelThread {
                 this.delay -= dt;
                 if(this.delay<=0){
                     this.newStar();
+                    this.server.notifyAllSessions();
                 }
                 try {
                     Thread.sleep(Math.max(0,l-System.currentTimeMillis()));

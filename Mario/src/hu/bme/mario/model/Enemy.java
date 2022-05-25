@@ -28,12 +28,13 @@ public abstract class Enemy extends DumbEntity{
                         p.newPlayer.speedX = this.speedX;
                         p.newPlayer.speedY = this.speedY;
                         p.newPlayer.protect();
-                        System.out.println(p.newPlayer==null);
+                        p.newPlayer.setStarCount(p.getStarCount());
                     }else if(FirePlayer.class.equals(p.getClass())){
                         p.newPlayer = new NormalPlayer(this.x, this.y, this.game);
                         p.newPlayer.speedX = this.speedX;
                         p.newPlayer.speedY = this.speedY;
                         p.newPlayer.protect();
+                        p.newPlayer.setStarCount(p.getStarCount());
                     }
 
                     p.protect();

@@ -51,6 +51,7 @@ public class FireBall extends Entity {
 
                 if (p.getStarCount() > 0) {
                     p.decStarCount();
+                    System.out.println("del fireball");
                     this.game.addEntity(new Star(this.x, this.y, (this.x < e.x) ? Direction.RIGHT : Direction.LEFT, this.game));
                 }
                 p.protect();

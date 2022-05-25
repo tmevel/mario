@@ -1,0 +1,62 @@
+@startuml
+class hu.bme.mario.network.Level1Server {
+# void initLevel()
++ {static} void main(String[])
+}
+class hu.bme.mario.network.Session {
+- ObjectInputStream ois
+- ObjectOutputStream oos
+- int sessionID
+- Server server
+- KeyControl control
++ KeyControl getControl()
++ int getSessionID()
++ void updateClient()
+- ClientGame getPlayerGame()
++ void run()
+}
+class hu.bme.mario.network.KeyControl {
+- boolean right
+- boolean left
+- boolean up
+- boolean special
++ boolean updateAndCheckChanged(KeyEvent)
++ boolean goRight()
++ boolean goLeft()
++ boolean jump()
++ boolean special()
+}
+abstract class hu.bme.mario.network.Server {
+# ModelThread model
+- ServerSocket ss
+- ArrayList<Session> sessions
+- int PORT
+# {abstract}void initLevel()
++ ModelThread getModel()
++ void notifyAllSessions()
++ void removeSession(Session)
++ void startModel()
++ void run()
+}
+class hu.bme.mario.model.ModelThread {
+# Game game
++ Game getGame()
++ void setGame(Game)
++ void run()
+}
+class hu.bme.mario.network.Level1ModelThread {
+- Server server
+- {static} double newStarDelay
+- double delay
+- void newStar()
++ void run()
+}
+
+
+hu.bme.mario.network.Server <|-- hu.bme.mario.network.Level1Server
+hu.bme.mario.network.Thread <|-- hu.bme.mario.network.Session
+java.io.Serializable <|.. hu.bme.mario.network.KeyControl
+hu.bme.mario.network.Thread <|-- hu.bme.mario.network.Server
+hu.bme.mario.model.Thread <|-- hu.bme.mario.model.ModelThread
+hu.bme.mario.network.ModelThread <|-- hu.bme.mario.network.Level1ModelThread
+@enduml

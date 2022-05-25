@@ -12,11 +12,13 @@ public class SmallPlayer extends Player{
             this.newPlayer = new NormalPlayer(this.x, this.y, this.game);
             this.newPlayer.speedX = this.speedX;
             this.newPlayer.speedY = this.speedY;
+            this.newPlayer.starCount = this.starCount;
             e.hasToBeRemoved = true;
         }else if (Flower.class.equals(e.getClass())) {
             this.newPlayer = new FirePlayer(this.x, this.y, this.game);
             this.newPlayer.speedX = this.speedX;
             this.newPlayer.speedY = this.speedY;
+            this.newPlayer.starCount = this.starCount;
             e.hasToBeRemoved = true;
         }
 
